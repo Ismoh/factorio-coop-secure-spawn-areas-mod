@@ -1,10 +1,10 @@
 {
     "name": "coop-secure-spawn-areas",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "title": "Factorio Coop Secure Spawn Areas",
     "author": "ttv/Ismoh_",
     "factorio_version": "1.0",
     "contact": "https://www.twitch.tv/ismoh_",
     "homepage": "https://www.twitch.tv/ismoh_",
-    "description": "This is a factorio mod, which creates teams for factorio and also modify the map to have separated secure starting spawn areas."
+    "description": "This is a factorio mod, which creates teams and also modify the map to have separated secure starting spawn areas."
 }
