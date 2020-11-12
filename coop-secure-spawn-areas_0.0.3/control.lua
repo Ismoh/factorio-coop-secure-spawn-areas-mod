@@ -1,3 +1,6 @@
+--Load GUI code from another file, called gui.lua
+require("gui")
+
 -- Player instance is not created or available in on_init().
 -- The chat instance seems to be not available as well.
 script.on_init(function()
@@ -8,9 +11,10 @@ script.on_init(function()
 
 end)
 
-script.on_event(defines.events.on_player_joined_game, function(event) 
-
+script.on_event(defines.events.on_player_joined_game, function(event)
   local player = game.get_player(event.player_index)
+
+  create_gui(player)
 
   local set_wall_type = settings.get_player_settings(player)["set-wall-type"].value
   log("set-wall-type = " .. set_wall_type)
