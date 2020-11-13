@@ -1,0 +1,9 @@
+{
+    "Lua.diagnostics.globals": [
+        "script",
+        "settings",
+        "log",
+        "game",
+        "defines"
+    ]
+}
