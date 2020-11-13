@@ -1,3 +1,6 @@
+-- Load global pretty pring function
+require("util.pprint")
+
 --Load GUI code from another files
 local teams_icon_gui = require("gui/teams-icon-gui")
 local teams_menu = require("gui/teams-menu")
