@@ -1,4 +1,4 @@
-function create_sprite(name, width, height)
+local function create_sprite(name, width, height)
     return {
       type ="sprite",
       name = "cssa-"..name,

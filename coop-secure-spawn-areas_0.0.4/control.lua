@@ -2,6 +2,7 @@
 require("util.pprint")
 
 --Load GUI code from another files
+local gui = require("gui.gui")
 local teams_icon_gui = require("gui/teams-icon-gui")
 local teams_menu = require("gui/teams-menu")
 
@@ -14,10 +15,18 @@ script.on_init(function()
 
 end)
 
+-- This is meant for 3 specific reasons and only
+-- re-register conditional event handlers
+-- re-setup meta tables
+-- create local references to tables stored in the global table
+script.on_load(function ()
+    
+end)
+
 script.on_event(defines.events.on_player_joined_game, function(event)
   local player = game.get_player(event.player_index)
 
-  teams_icon_gui.create_teams_icon(player)
+  --teams_icon_gui.create_teams_icon(player)
 
   local set_wall_type = settings.get_player_settings(player)["set-wall-type"].value
   log("set-wall-type = " .. set_wall_type)

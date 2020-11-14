@@ -1,5 +1,8 @@
 -- https://kallanreed.wordpress.com/2015/03/15/class-modules-in-lua/
 
+local table_tostring = require("util.table-tostring")
+
+
 -- First, I pre-declare a table that will act as both
 -- the method table and the metatable. I do this because
 -- I like to define my 'new' function before the other
@@ -21,9 +24,9 @@ local new = function(player, force, neutrals, allies, enemies)
     local team = {
         player = player, -- remove, because the player is already in players?
         force = force,
-        neutrals = neutrals or {},
-        allies = allies or {},
-        enemies = enemies or {}
+        neutrals = neutrals,
+        allies = allies,
+        enemies = enemies
     }
     
     player.force = force
@@ -37,12 +40,12 @@ end
 -- Define a tostring function
 local tostring = function(self)
     return string.format(
-        "player = %s, force = %s, neutrals = %s, allies = %s, enemies = %s", self.player.force
-        --table.tostring(self.player),
-        --table.tostring(self.force),
-        --table.tostring(self.neutrals),
-        --table.tostring(self.allies),
-        --table.tostring(self.enemies)
+        "player = %s, force = %s, neutrals = %s, allies = %s, enemies = %s",
+        self.player.name,
+        self.force.name,
+        table_tostring(self.neutrals.players),
+        table_tostring(self.allies.players),
+        table_tostring(self.enemies.players)
     )
 end
 

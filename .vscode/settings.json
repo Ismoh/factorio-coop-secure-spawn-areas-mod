@@ -4,6 +4,7 @@
         "settings",
         "log",
         "game",
-        "defines"
+        "defines",
+        "data"
     ]
 }

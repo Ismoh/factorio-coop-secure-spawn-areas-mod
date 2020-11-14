@@ -2,7 +2,7 @@ local teams_menu_gui_lib = require("gui.teams-menu")
 
 script.on_event(defines.events.on_gui_click, function(event)
     local player = game.get_player(event.player_index)
-
+--[[
     if (event.element.name == "teams-menu-button")
     then
         if (player.gui.center["teams-menu-frame"] ~= nil)
@@ -13,7 +13,8 @@ script.on_event(defines.events.on_gui_click, function(event)
 
         local teams_menu = teams_menu_gui_lib.new(player)
         teams_menu:gui()
-        --[[player.gui.center.add
+        --[[
+            player.gui.center.add
         {
             type = "frame",
             name = "teams-menu-frame",
@@ -29,6 +30,7 @@ script.on_event(defines.events.on_gui_click, function(event)
             caption = "This is a test" -- text or value
         }
         show_teams_menu = false
-        ]]--
+        
     end
+    ]]--
 end)
