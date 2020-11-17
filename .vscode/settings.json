@@ -5,6 +5,7 @@
         "log",
         "game",
         "defines",
-        "data"
+        "data",
+        "global"
     ]
 }

@@ -17,7 +17,6 @@ script.on_init(function()
   local size_area_to_clone = settings.startup["size-area-to-clone"].value
   log("size-area-to-clone = " .. size_area_to_clone)
   game.print("size-area-to-clone = " .. size_area_to_clone)
-
 end)
 
 
@@ -25,8 +24,27 @@ end)
 -- re-register conditional event handlers
 -- re-setup meta tables
 -- create local references to tables stored in the global table
-script.on_load(function ()
-    
+script.on_load(function()
+  gui = Gui:new(global.gui.player, global.gui.teams)
+  log("on_load executed")
+end)
+
+
+script.on_event(defines.events.on_player_joined_game, function (event)
+  local player = game.get_player(event.player_index)
+  game.print("Player " .. player.name .. " joined the game.")
+end)
+
+
+script.on_event(defines.events.on_pre_player_left_game, function (event)
+  local player = game.get_player(event.player_index)
+  game.print("Player " .. player.name .. " pre left the game.")
+end)
+
+
+script.on_event(defines.events.on_player_left_game, function (event)
+  local player = game.get_player(event.player_index)
+  game.print("Player " .. player.name .. " left the game.")
 end)
 
 
@@ -44,14 +62,22 @@ script.on_event(defines.events.on_player_created, function (event)
 
   gui = Gui:new(player, teams)
   gui:create_icon()
+
+  global.gui = gui
+  log("on_player_created executed")
 end)
 
 
 script.on_event(defines.events.on_gui_click, function(event)
-  --local player = game.get_player(event.player_index)
+  local player = game.get_player(event.player_index)
 
   if (event.element.name == "teams-menu-icon")
   then
+    local menu_when_loaded = player.gui.screen["teams-menu-frame"]
+    if(menu_when_loaded ~= nil)
+    then
+      gui.menu = menu_when_loaded
+    end
     -- When gui.menu was created (LuaGuiElement) and then destoryed gui.menu is not nil, but gui.menu.valid = false
     if(gui.menu == nil or not gui.menu.valid) then
       gui:create_menu()
@@ -59,6 +85,8 @@ script.on_event(defines.events.on_gui_click, function(event)
       gui.menu.destroy()
     end
   end
+
+  log("on_gui_click executed")
 end)
 
 
