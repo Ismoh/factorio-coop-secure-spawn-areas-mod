@@ -1,76 +1,157 @@
-local gui_module = {}
-
-local icon = nil -- top left litte symbol of the mod
-local menu = nil -- menu gui for having a look on the exisiting teams/forces and the status of alliance
-local teams = {} -- the actual team instances as a list
+local Gui = {}
+Gui.__index = Gui
 
 
--- Listen to the on player created event and create the mods icon
-script.on_event(defines.events.on_player_created, function (event)
-    local player = game.get_player(event.player_index)
+function Gui:__call(player, teams)
+    local inst = setmetatable({}, self)
+    inst:new(player, teams)
+    return inst
+end
 
-    if(icon == nil) then
-        icon = player.gui.left.add
+
+function Gui:new(player, teams)
+    local gui = {
+        player = player,
+        icon = nil,
+        menu = nil,
+        teams = teams
+    }
+    setmetatable(gui, self)
+    return gui
+end
+
+
+function Gui:create_icon()
+    if(self.icon == nil) then
+        self.icon = self.player.gui.left.add
         {
             type = "sprite-button",
             name = "teams-menu-icon",
-            sprite = "cssa-main-sprite-button",
-            --clicked_sprite = "",
+            sprite = "cssa-main-sprite-button"
         }
     else
         log("gui icon already exists")
     end
-end)
-
-
-script.on_event(defines.events.on_gui_click, function(event)
-    local player = game.get_player(event.player_index)
-
-    if (event.element.name == "teams-menu-icon")
-    then
-        if(menu == nil) then
-            gui_module.create_menu(player)
-        else
-            menu.destroy()
-        end
-    end
-end)
+end
 
 
 -- Creates the menu gui for showing, creating and adjusting forces
-local function create_menu(player)
-    menu = player.gui.center.add
+function Gui:create_menu()
+    self.menu = self.player.gui.screen.add
     {
         type = "frame",
         name = "teams-menu-frame",
         direction = "horizontal",
-        -- style = "LuaStyle-name",
+        caption = "Forces"
     }
-    menu.add
+    self.menu.force_auto_center()
+
+    local empty_drag_widget = self.menu.add
     {
-        type = "label",
-        name = "teams-menu-title",
-        caption = "Teams / Forces"
+        type = "empty-widget",
+        style = "draggable_space"
     }
-    local table_frame = menu.add
+    empty_drag_widget.drag_target = self.menu
+
+    local gui_table = self.menu.add
     {
-        type = "frame",
-        name = "teams-menu-table-frame",
-        direction = "horizontal"
+        type = "table",
+        name = "teams-menu-table",
+        column_count = 5,
+        draw_vertical_lines = false,
+        draw_horizontal_lines = false,
+        draw_horizontal_line_after_headers = true,
+        vertical_centering = true
     }
-    table_frame.add
+
+    -- first table row contains 5 elements as the headers
+    gui_table.add
     {
         type = "label",
         name = "teams-menu-table-frame-first-row-name",
         caption = "Name"
     }
-    table_frame.add
+    gui_table.add
     {
         type = "label",
         name = "teams-menu-table-frame-first-row-neutral",
         caption = "Neutral"
     }
+    gui_table.add
+    {
+        type = "label",
+        name = "teams-menu-table-frame-first-row-allies",
+        caption = "Allies"
+    }
+    gui_table.add
+    {
+        type = "label",
+        name = "teams-menu-table-frame-first-row-enemies",
+        caption = "Enemies"
+    }
+    gui_table.add
+    {
+        type = "label",
+        name = "teams-menu-table-frame-first-row-players",
+        caption = "Players"
+    }
+
+    self:create_entry_for_teams(gui_table)
 end
 
-gui_module.create_menu = create_menu
-return gui_module
+
+function Gui:create_entry_for_teams(gui_table)
+    for key, team in pairs(self.teams) do
+        -- second table row contains 5 elements
+        gui_table.add
+        {
+            type = "label",
+            name = "teams-menu-table-frame-" .. team.name .. "-name",
+            caption = team.name
+        }
+        gui_table.add
+        {
+            type = "checkbox",
+            name = "teams-menu-table-frame-" .. team.name .. "-row-neutral",
+            state = false
+        }
+        gui_table.add
+        {
+            type = "checkbox",
+            name = "teams-menu-table-frame-" .. team.name .. "-row-allies",
+            state = false
+        }
+        gui_table.add
+        {
+            type = "checkbox",
+            name = "teams-menu-table-frame-" .. team.name .. "-row-enemies",
+            state = false
+        }
+        local players_flow = gui_table.add
+        {
+            type = "flow",
+            name = "teams-menu-table-frame-" .. team.name .. "-row-players",
+            direction = "horizontal"
+        }
+        for key, player in pairs(team.players) do
+            players_flow.add
+            {
+                type = "label",
+                name = player.name,
+                caption = player.name
+            }
+        end
+    end
+end
+
+
+function Gui:tostring()
+    return string.format(
+        "icon = " .. self.icon,
+        "menu = " .. self.menu,
+        "teams = " .. self.teams
+    )
+end
+
+
+return Gui

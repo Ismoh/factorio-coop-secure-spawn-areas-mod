@@ -1,7 +1,7 @@
 -- https://kallanreed.wordpress.com/2015/03/15/class-modules-in-lua/
+-- another or better approach: https://www.youtube.com/watch?v=O15GoH7SDn0
 
 local table_tostring = require("util.table-tostring")
-
 
 -- First, I pre-declare a table that will act as both
 -- the method table and the metatable. I do this because

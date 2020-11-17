@@ -1,10 +1,15 @@
 -- Load global pretty pring function
 require("util.pprint")
 
---Load GUI code from another files
-local gui = require("gui.gui")
-local teams_icon_gui = require("gui/teams-icon-gui")
-local teams_menu = require("gui/teams-menu")
+
+-- Load Gui code from another file
+local Gui = require("gui.gui")
+local gui = nil -- instance of the gui
+
+-- Load Team
+local Team = require("prototypes.team")
+local teams = {} -- List/table of all teams
+
 
 -- Player instance is not created or available in on_init().
 -- The chat instance seems to be not available as well.
@@ -15,6 +20,7 @@ script.on_init(function()
 
 end)
 
+
 -- This is meant for 3 specific reasons and only
 -- re-register conditional event handlers
 -- re-setup meta tables
@@ -23,10 +29,41 @@ script.on_load(function ()
     
 end)
 
-script.on_event(defines.events.on_player_joined_game, function(event)
+
+-- Listen to the on player created event and create the mods icon
+script.on_event(defines.events.on_player_created, function (event)
   local player = game.get_player(event.player_index)
 
-  --teams_icon_gui.create_teams_icon(player)
+  local player_force = game.forces["player"] -- default
+  local neutral_force = game.forces["neutral"]
+  local enemy_force = game.forces["enemy"] -- biter
+
+  table.insert(teams, player_force)
+  table.insert(teams, neutral_force)
+  table.insert(teams, enemy_force)
+
+  gui = Gui:new(player, teams)
+  gui:create_icon()
+end)
+
+
+script.on_event(defines.events.on_gui_click, function(event)
+  --local player = game.get_player(event.player_index)
+
+  if (event.element.name == "teams-menu-icon")
+  then
+    -- When gui.menu was created (LuaGuiElement) and then destoryed gui.menu is not nil, but gui.menu.valid = false
+    if(gui.menu == nil or not gui.menu.valid) then
+      gui:create_menu()
+    else
+      gui.menu.destroy()
+    end
+  end
+end)
+
+
+script.on_event(defines.events.on_player_joined_game, function(event)
+  local player = game.get_player(event.player_index)
 
   local set_wall_type = settings.get_player_settings(player)["set-wall-type"].value
   log("set-wall-type = " .. set_wall_type)
