@@ -8,15 +8,19 @@ local gui = nil -- instance of the gui
 
 -- Load Team
 local Team = require("prototypes.team")
-local teams = {} -- List/table of all teams
+--local teams = {} -- List/table of all teams
 
+
+-- EVENTS
 
 -- Player instance is not created or available in on_init().
 -- The chat instance seems to be not available as well.
 script.on_init(function()
   local size_area_to_clone = settings.startup["size-area-to-clone"].value
-  log("size-area-to-clone = " .. size_area_to_clone)
-  game.print("size-area-to-clone = " .. size_area_to_clone)
+  local hide_default_forces = settings.startup["hide-default-forces"].value
+  -- game.print("size-area-to-clone = " .. size_area_to_clone)
+  -- game.print("hide_default_forces = " .. tostring(hide_default_forces))
+  init_teams()
 end)
 
 
@@ -25,7 +29,7 @@ end)
 -- re-setup meta tables
 -- create local references to tables stored in the global table
 script.on_load(function()
-  gui = Gui:new(global.gui.player, global.gui.teams)
+  gui = Gui:new(global.gui.player, global.gui.forces, global.gui.hide_default_forces)
   log("on_load executed")
 end)
 
@@ -52,15 +56,8 @@ end)
 script.on_event(defines.events.on_player_created, function (event)
   local player = game.get_player(event.player_index)
 
-  local player_force = game.forces["player"] -- default
-  local neutral_force = game.forces["neutral"]
-  local enemy_force = game.forces["enemy"] -- biter
-
-  table.insert(teams, player_force)
-  table.insert(teams, neutral_force)
-  table.insert(teams, enemy_force)
-
-  gui = Gui:new(player, teams)
+  local hide_default_forces = settings.startup["hide-default-forces"].value
+  gui = Gui:new(player, game.forces, hide_default_forces)
   gui:create_icon()
 
   global.gui = gui
@@ -74,8 +71,8 @@ end)
 
 
 script.on_event(defines.events.on_force_created, function(event)
-  game.print("Force " .. event.force .. " was added to the teams list.")
-  table.insert(teams, event.force)
+  --game.print("Force " .. event.force.name .. " was added to the teams list.")
+  --table.insert(teams, event.force)
 end)
 
 
@@ -83,15 +80,50 @@ script.on_event(defines.events.on_player_joined_game, function(event)
   local player = game.get_player(event.player_index)
 
   local set_wall_type = settings.get_player_settings(player)["set-wall-type"].value
-  log("set-wall-type = " .. set_wall_type)
-  player.print("set-wall-type = " .. set_wall_type)
+  -- log("set-wall-type = " .. set_wall_type)
+  -- player.print("set-wall-type = " .. set_wall_type)
 
   local size_area_to_clone = settings.startup["size-area-to-clone"].value
 
-  clone_starting_area(player, size_area_to_clone)
+  -- clone_starting_area(player, size_area_to_clone)
 
 end)
 
+
+-- FUNCTIONS
+
+function init_teams()
+  local player_force = game.forces["player"] -- default
+  local neutral_force = game.forces["neutral"]
+  local enemy_force = game.forces["enemy"] -- biter
+
+  player_force.set_friend(player_force, true)
+  player_force.set_friend(neutral_force, false)
+  player_force.set_friend(enemy_force, false)
+  player_force.set_cease_fire(player_force, true)
+  player_force.set_cease_fire(neutral_force, true)
+  player_force.set_cease_fire(enemy_force, false)
+
+  neutral_force.set_friend(player_force, false)
+  neutral_force.set_friend(neutral_force, true)
+  neutral_force.set_friend(enemy_force, false)
+  neutral_force.set_cease_fire(player_force, true)
+  neutral_force.set_cease_fire(neutral_force, true)
+  neutral_force.set_cease_fire(enemy_force, false)
+
+  enemy_force.set_friend(player_force, false)
+  enemy_force.set_friend(neutral_force, false)
+  enemy_force.set_friend(enemy_force, true)
+  enemy_force.set_cease_fire(player_force, false)
+  enemy_force.set_cease_fire(neutral_force, false)
+  enemy_force.set_cease_fire(enemy_force, true)
+
+  --local player_team = Team:new(nil, player_force, { neutral_force }, )
+
+  --table.insert(teams, player_force)
+  --table.insert(teams, neutral_force)
+  --table.insert(teams, enemy_force)
+end
 
 function clone_starting_area(player, size_area_to_clone)
   local source_area = {

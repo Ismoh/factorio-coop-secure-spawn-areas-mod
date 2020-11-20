@@ -34,6 +34,13 @@ data:extend({
         default_value = true,
         order = "4"
     },
+    {
+        type = "bool-setting",
+        name = "hide-default-forces",
+        setting_type = "startup",
+        default_value = true,
+        order = "5"
+    },
     -- Security Settings: Some of them are configurable by each player: "runtime-per-user"
     {
         type = "int-setting",

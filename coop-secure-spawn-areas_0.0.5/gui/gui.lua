@@ -4,19 +4,20 @@ local Gui = {}
 Gui.__index = Gui
 
 
-function Gui:__call(player, teams)
+function Gui:__call(player, forces, hide_default_forces)
     local inst = setmetatable({}, self)
-    inst:new(player, teams)
+    inst:new(player, forces, hide_default_forces)
     return inst
 end
 
 
-function Gui:new(player, teams)
+function Gui:new(player, forces, hide_default_forces)
     local gui = {
         player = player,
         icon = nil,
         menu = nil,
-        teams = teams
+        forces = forces,
+        hide_default_forces = hide_default_forces
     }
     setmetatable(gui, self)
     return gui
@@ -77,14 +78,14 @@ function Gui:create_menu()
     gui_table.add
     {
         type = "label",
-        name = "teams-menu-table-frame-first-row-neutral",
-        caption = "Neutral"
+        name = "teams-menu-table-frame-first-row-allies",
+        caption = "Allies"
     }
     gui_table.add
     {
         type = "label",
-        name = "teams-menu-table-frame-first-row-allies",
-        caption = "Allies"
+        name = "teams-menu-table-frame-first-row-neutral",
+        caption = "Neutrals"
     }
     gui_table.add
     {
@@ -99,47 +100,68 @@ function Gui:create_menu()
         caption = "Players"
     }
 
-    self:create_entry_for_teams(gui_table)
+    self:create_entry_for_forces(gui_table)
     self:create_new_force_button()
     self:create_join_force()
 end
 
 
-function Gui:create_entry_for_teams(gui_table)
-    log("create_entry_for_teams executed as " .. self.player.name)
-    for key, team in pairs(self.teams) do
+function Gui:create_entry_for_forces(gui_table)
+    log("create_entry_for_forces executed as " .. self.player.name)
+    for key, force in pairs(self.forces) do
+
+        if(self.hide_default_forces)
+        then
+            if(force.name == "player" or force.name == "neutral" or force.name == "enemy")
+            then
+                goto continue
+            end
+        end
+
         -- second table row contains 5 elements
         gui_table.add
         {
             type = "label",
-            name = "teams-menu-table-frame-" .. team.name .. "-name",
-            caption = team.name
+            name = "teams-menu-table-frame-" .. force.name .. "-name",
+            caption = force.name
+        }
+
+        local allies_check = self.player.force.get_friend(force)
+        local neutral_check = not self.player.force.get_friend(force) and self.player.force.get_cease_fire(force)
+        local enemies_check = not self.player.force.get_friend(force) and not self.player.force.get_cease_fire(force)
+
+        gui_table.add
+        {
+            type = "checkbox",
+            name = "teams-menu-table-frame-" .. force.name .. "-row-allies",
+            caption = force.name, -- use caption for on gui click, to know the force
+            state = allies_check,
+            enabled = self.player.force.name ~= force.name
         }
         gui_table.add
         {
             type = "checkbox",
-            name = "teams-menu-table-frame-" .. team.name .. "-row-neutral",
-            state = false
+            name = "teams-menu-table-frame-" .. force.name .. "-row-neutrals",
+            caption = force.name, -- use caption for on gui click, to know the force
+            state = neutral_check,
+            enabled = self.player.force.name ~= force.name
         }
         gui_table.add
         {
             type = "checkbox",
-            name = "teams-menu-table-frame-" .. team.name .. "-row-allies",
-            state = false
+            name = "teams-menu-table-frame-" .. force.name .. "-row-enemies",
+            caption = force.name, -- use caption for on gui click, to know the force
+            state = enemies_check,
+            enabled = self.player.force.name ~= force.name
         }
-        gui_table.add
-        {
-            type = "checkbox",
-            name = "teams-menu-table-frame-" .. team.name .. "-row-enemies",
-            state = false
-        }
+
         local players_flow = gui_table.add
         {
             type = "flow",
-            name = "teams-menu-table-frame-" .. team.name .. "-row-players",
+            name = "teams-menu-table-frame-" .. force.name .. "-row-players",
             direction = "horizontal"
         }
-        for key, player in pairs(team.players) do
+        for key, player in pairs(force.players) do
             players_flow.add
             {
                 type = "label",
@@ -147,6 +169,8 @@ function Gui:create_entry_for_teams(gui_table)
                 caption = player.name
             }
         end
+
+        ::continue::
     end
 end
 
@@ -168,16 +192,18 @@ end
 
 
 function Gui:create_join_force()
-    local teams_string = {}
-    for key, team in pairs(self.teams) do
-        table.insert(teams_string, key, team.name)
+    local forces_string = {}
+    local forces_string_key = 0
+    for key, force in pairs(self.forces) do
+        forces_string_key = forces_string_key + 1
+        table.insert(forces_string, forces_string_key, force.name)
     end
     self.menu.add
     {
         type = "drop-down",
         name = "teams-menu-join-force-drop-down",
-        default_value = teams_string[1],
-        items = teams_string
+        default_value = forces_string[1],
+        items = forces_string
     }
     self.menu.add
     {
@@ -192,7 +218,7 @@ function Gui:tostring()
     return string.format(
         "icon = " .. self.icon,
         "menu = " .. self.menu,
-        "teams = " .. self.teams
+        "forces = " .. self.forces
     )
 end
 
@@ -235,7 +261,20 @@ function Gui:on_gui_click(event)
             return
         end
 
-        game.create_force(text)
+        local created_force = game.create_force(text)
+
+        local player_force = game.forces["player"] -- default
+        local neutral_force = game.forces["neutral"]
+        local enemy_force = game.forces["enemy"] -- biter
+
+        created_force.set_friend(player_force, false)
+        created_force.set_friend(neutral_force, false)
+        created_force.set_friend(enemy_force, false)
+        created_force.set_cease_fire(player_force, true)
+        created_force.set_cease_fire(neutral_force, true)
+        created_force.set_cease_fire(enemy_force, false)
+
+        table.insert(self.forces, created_force)
         player.print("Force '" .. text .. "' created.", color_green)
 
         if(self.menu ~= nil)
@@ -264,6 +303,8 @@ function Gui:on_gui_click(event)
         end
 
         player.force = selected_force
+        player.force.set_friend(player.force, true)
+        player.force.set_cease_fire(player.force, true)
         player.print("Force '" .. selected_force .. "' joined.", color_green)
 
         if(self.menu ~= nil)
@@ -274,6 +315,48 @@ function Gui:on_gui_click(event)
 
         return
     end
+
+    if(event.element.type == "checkbox")
+    then
+        local checkbox = event.element
+        local force = game.forces[checkbox.caption]
+
+        if(string.find(checkbox.name, "allies"))
+        then
+            player.force.set_friend(force, checkbox.state)
+            player.force.set_cease_fire(force, checkbox.state)
+
+            force.set_friend(player.force, checkbox.state)
+            force.set_cease_fire(player.force, checkbox.state)
+        end
+
+        if(string.find(checkbox.name, "neutrals"))
+        then
+            player.force.set_friend(force, not checkbox.state)
+            player.force.set_cease_fire(force, checkbox.state)
+
+            force.set_friend(player.force, not checkbox.state)
+            force.set_cease_fire(player.force, checkbox.state)
+        end
+
+        if(string.find(checkbox.name, "enemies"))
+        then
+            player.force.set_friend(force, not checkbox.state)
+            player.force.set_cease_fire(force, not checkbox.state)
+
+            force.set_friend(player.force, not checkbox.state)
+            force.set_cease_fire(player.force, not checkbox.state)
+        end
+
+        if(self.menu ~= nil)
+        then
+            self.menu.destroy()
+            self:create_menu()
+        end
+
+        return
+    end
+
 end
 
 return Gui
