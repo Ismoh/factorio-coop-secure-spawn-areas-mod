@@ -69,24 +69,13 @@ end)
 
 
 script.on_event(defines.events.on_gui_click, function(event)
-  local player = game.get_player(event.player_index)
+  gui:on_gui_click(event)
+end)
 
-  if (event.element.name == "teams-menu-icon")
-  then
-    local menu_when_loaded = player.gui.screen["teams-menu-frame"]
-    if(menu_when_loaded ~= nil)
-    then
-      gui.menu = menu_when_loaded
-    end
-    -- When gui.menu was created (LuaGuiElement) and then destoryed gui.menu is not nil, but gui.menu.valid = false
-    if(gui.menu == nil or not gui.menu.valid) then
-      gui:create_menu()
-    else
-      gui.menu.destroy()
-    end
-  end
 
-  log("on_gui_click executed")
+script.on_event(defines.events.on_force_created, function(event)
+  game.print("Force " .. event.force .. " was added to the teams list.")
+  table.insert(teams, event.force)
 end)
 
 
