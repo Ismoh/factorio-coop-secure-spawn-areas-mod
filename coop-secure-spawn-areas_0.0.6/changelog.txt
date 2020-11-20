@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.4
+Date: 2020.11.20
+  Info:
+    - Alpha version. Creating forces is now working.
+  Optimisations:
+    - Completely rework of gui lua file.
+    - Using class module for gui.lua.
+  Features:
+    - You are now able to create and join forces.
+    - You are also able to set friend and cease fire.
+    - Allies = set friend
+    - Neutral = set cease fire
+---------------------------------------------------------------------------------------------------
 Version: 0.0.3
 Date: 2020.11.11
   Info:
