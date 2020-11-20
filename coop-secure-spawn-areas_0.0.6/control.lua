@@ -7,8 +7,8 @@ local Gui = require("gui.gui")
 local gui = nil -- instance of the gui
 
 -- Load Team
-local Team = require("prototypes.team")
---local teams = {} -- List/table of all teams
+--local Team = require("prototypes.team")
+local forces = {} -- List/table of all teams
 
 
 -- EVENTS
@@ -55,13 +55,23 @@ end)
 -- Listen to the on player created event and create the mods icon
 script.on_event(defines.events.on_player_created, function (event)
   local player = game.get_player(event.player_index)
+  player.print("on_player_created: gui == nil" .. tostring(gui == nil))
+  if(gui == nil)
+  then
+    player.print("on_player_created executed and creating gui instance as player " .. player.name)
+    local hide_default_forces = settings.startup["hide-default-forces"].value
+    gui = Gui:new(player, forces, hide_default_forces)
 
-  local hide_default_forces = settings.startup["hide-default-forces"].value
-  gui = Gui:new(player, game.forces, hide_default_forces)
+    table.insert(forces, game.forces.player)
+    table.insert(forces, game.forces.neutral)
+    table.insert(forces, game.forces.enemy)
+
+    global.gui = gui
+    player.print("on_player_created executed")
+  else
+    player.print("on_player_created executed, but gui instance already exists, as player " .. player.name)
+  end
   gui:create_icon()
-
-  global.gui = gui
-  log("on_player_created executed")
 end)
 
 
@@ -72,7 +82,7 @@ end)
 
 script.on_event(defines.events.on_force_created, function(event)
   --game.print("Force " .. event.force.name .. " was added to the teams list.")
-  --table.insert(teams, event.force)
+  --table.insert(forces, event.force)
 end)
 
 

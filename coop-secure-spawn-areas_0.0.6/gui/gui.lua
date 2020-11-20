@@ -118,11 +118,13 @@ function Gui:create_entry_for_forces(gui_table)
             end
         end
 
+        game.print("create_entry_for_forces executed as " .. force.name .. " as player " .. self.player.name)
+
         -- second table row contains 5 elements
         gui_table.add
         {
             type = "label",
-            name = "teams-menu-table-frame-" .. force.name .. "-name",
+            name = "teams-menu-table-frame-" .. force.name .. "-name-" .. self.player.name,
             caption = force.name
         }
 
@@ -133,7 +135,7 @@ function Gui:create_entry_for_forces(gui_table)
         gui_table.add
         {
             type = "checkbox",
-            name = "teams-menu-table-frame-" .. force.name .. "-row-allies",
+            name = "teams-menu-table-frame-" .. force.name .. "-row-allies-" .. self.player.name,
             caption = force.name, -- use caption for on gui click, to know the force
             state = allies_check,
             enabled = self.player.force.name ~= force.name
@@ -141,7 +143,7 @@ function Gui:create_entry_for_forces(gui_table)
         gui_table.add
         {
             type = "checkbox",
-            name = "teams-menu-table-frame-" .. force.name .. "-row-neutrals",
+            name = "teams-menu-table-frame-" .. force.name .. "-row-neutrals-" .. self.player.name,
             caption = force.name, -- use caption for on gui click, to know the force
             state = neutral_check,
             enabled = self.player.force.name ~= force.name
@@ -149,7 +151,7 @@ function Gui:create_entry_for_forces(gui_table)
         gui_table.add
         {
             type = "checkbox",
-            name = "teams-menu-table-frame-" .. force.name .. "-row-enemies",
+            name = "teams-menu-table-frame-" .. force.name .. "-row-enemies-" .. self.player.name,
             caption = force.name, -- use caption for on gui click, to know the force
             state = enemies_check,
             enabled = self.player.force.name ~= force.name
@@ -158,7 +160,7 @@ function Gui:create_entry_for_forces(gui_table)
         local players_flow = gui_table.add
         {
             type = "flow",
-            name = "teams-menu-table-frame-" .. force.name .. "-row-players",
+            name = "teams-menu-table-frame-" .. force.name .. "-row-players-" .. self.player.name,
             direction = "horizontal"
         }
         for key, player in pairs(force.players) do
