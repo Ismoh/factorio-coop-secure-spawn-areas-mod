@@ -7,8 +7,8 @@ local Gui = require("gui.gui")
 local gui = nil -- instance of the gui
 
 -- Load Team
---local Team = require("prototypes.team")
-local forces = {} -- List/table of all teams
+local Team = require("prototypes.team")
+--local teams = {} -- List/table of all teams
 
 
 -- EVENTS
@@ -18,8 +18,8 @@ local forces = {} -- List/table of all teams
 script.on_init(function()
   local size_area_to_clone = settings.startup["size-area-to-clone"].value
   local hide_default_forces = settings.startup["hide-default-forces"].value
-  -- game.print("size-area-to-clone = " .. size_area_to_clone)
-  -- game.print("hide_default_forces = " .. tostring(hide_default_forces))
+  game.print("size-area-to-clone = " .. size_area_to_clone)
+  game.print("hide_default_forces = " .. tostring(hide_default_forces))
   init_teams()
 end)
 
@@ -55,23 +55,13 @@ end)
 -- Listen to the on player created event and create the mods icon
 script.on_event(defines.events.on_player_created, function (event)
   local player = game.get_player(event.player_index)
-  player.print("on_player_created: gui == nil" .. tostring(gui == nil))
-  if(gui == nil)
-  then
-    player.print("on_player_created executed and creating gui instance as player " .. player.name)
-    local hide_default_forces = settings.startup["hide-default-forces"].value
-    gui = Gui:new(player, forces, hide_default_forces)
 
-    table.insert(forces, game.forces.player)
-    table.insert(forces, game.forces.neutral)
-    table.insert(forces, game.forces.enemy)
-
-    global.gui = gui
-    player.print("on_player_created executed")
-  else
-    player.print("on_player_created executed, but gui instance already exists, as player " .. player.name)
-  end
+  local hide_default_forces = settings.startup["hide-default-forces"].value
+  gui = Gui:new(player, game.forces, hide_default_forces)
   gui:create_icon()
+
+  global.gui = gui
+  log("on_player_created executed")
 end)
 
 
@@ -82,7 +72,7 @@ end)
 
 script.on_event(defines.events.on_force_created, function(event)
   --game.print("Force " .. event.force.name .. " was added to the teams list.")
-  --table.insert(forces, event.force)
+  --table.insert(teams, event.force)
 end)
 
 
@@ -90,12 +80,12 @@ script.on_event(defines.events.on_player_joined_game, function(event)
   local player = game.get_player(event.player_index)
 
   local set_wall_type = settings.get_player_settings(player)["set-wall-type"].value
-  -- log("set-wall-type = " .. set_wall_type)
-  -- player.print("set-wall-type = " .. set_wall_type)
+  log("set-wall-type = " .. set_wall_type)
+  player.print("set-wall-type = " .. set_wall_type)
 
   local size_area_to_clone = settings.startup["size-area-to-clone"].value
 
-  -- clone_starting_area(player, size_area_to_clone)
+  clone_starting_area(player, size_area_to_clone)
 
 end)
 
