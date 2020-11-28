@@ -16,7 +16,7 @@ local forces = {} -- List/table of all teams
 -- Player instance is not created or available in on_init().
 -- The chat instance seems to be not available as well.
 script.on_init(function()
-  local size_area_to_clone = math.floor(settings.startup["size-area-to-clone"].value /32) * 32
+  local size_area_to_clone = settings.startup["size-area-to-clone"].value
   local hide_default_forces = settings.startup["hide-default-forces"].value
   -- game.print("size-area-to-clone = " .. size_area_to_clone)
   -- game.print("hide_default_forces = " .. tostring(hide_default_forces))
@@ -93,7 +93,7 @@ script.on_event(defines.events.on_player_joined_game, function(event)
   -- log("set-wall-type = " .. set_wall_type)
   -- player.print("set-wall-type = " .. set_wall_type)
 
-  local size_area_to_clone = math.floor(settings.startup["size-area-to-clone"].value /32) * 32
+  local size_area_to_clone = settings.startup["size-area-to-clone"].value
 
   -- clone_starting_area(player, size_area_to_clone)
 

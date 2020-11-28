@@ -1,18 +1,4 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.0.8
-Date: 2020.11.28
-  Info:
-    - STILL WIP!
-    - Updated mod to be compatible with Factorio 1.1.1!
-    - You are able to create and join forces. Additionally, you can create new spawns for forces.
-    - Everything from the starting spawn area will be cloned: Tiles, Entities, Resources, ..
-  Bugfixes:
-    - Fixed multiplayer desynchronisation.
-  Optimisations:
-    - Using grid layout instead of coordinates.
-    - Reworked code to use normal lua modules.
-    - Removed class modules (OOP).
----------------------------------------------------------------------------------------------------
 Version: 0.0.7
 Date: 2020.11.24
   Info:

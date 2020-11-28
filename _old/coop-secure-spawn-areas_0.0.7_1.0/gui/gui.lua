@@ -1,9 +1,6 @@
 --https://github.com/narc0tiq/evoGUI/blob/master/evoGUI.lua
 
-require "clone"
-
 if not cssa_gui then cssa_gui = {} end
-if not cssa_clone then cssa_clone = {} end
 
 -- EVENTS
 
@@ -64,6 +61,7 @@ function cssa_gui.on_gui_click(event)
         created_force.set_cease_fire(neutral_force, true)
         created_force.set_cease_fire(enemy_force, false)
 
+        --table.insert(self.forces, created_force)
         player.print("Force '" .. text .. "' created.", color_green)
 
         local menu = player.gui.screen.cssa_gui_menu
@@ -149,21 +147,6 @@ function cssa_gui.on_gui_click(event)
         return
     end
 
-    if (event.element.name == "teams-menu-table-frame-" .. player.force.name .. "-row-spawn-button")
-    then
-        for key, entry in pairs(global.spawns) do
-            if(player.force.name == entry.force_name and entry.spawn_created)
-            then
-                player.print("There already was a new spawn created for '" .. player.force.name .. "'!", color_red)
-                return
-            end
-        end
-        local button = player.gui.screen.cssa_gui_menu["teams-menu-table"]["teams-menu-table-frame-" .. player.force.name .. "-row-spawn-button"]
-        cssa_clone.clone_area(player)
-        button.enabled = false
-        return
-    end
-
 end
 
 --
@@ -221,7 +204,7 @@ function cssa_gui.create_menu(player)
         {
             type = "table",
             name = "teams-menu-table",
-            column_count = 6,
+            column_count = 5,
             draw_vertical_lines = false,
             draw_horizontal_lines = false,
             draw_horizontal_line_after_headers = true,
@@ -252,12 +235,6 @@ function cssa_gui.create_menu(player)
             type = "label",
             name = "teams-menu-table-frame-first-row-enemies",
             caption = "Enemies"
-        }
-        gui_table.add
-        {
-            type = "label",
-            name = "teams-menu-table-frame-first-row-spawn",
-            caption = "Starting Area"
         }
         gui_table.add
         {
@@ -332,20 +309,6 @@ function cssa_gui.create_entry_for_forces(player, gui_table)
             caption = force.name, -- use caption for on gui click, to know the force
             state = enemies_check,
             enabled = player.force.name ~= force.name
-        }
-
-        local enable_new_spawn = true
-        if(global.spawns[force.name] ~= nil)
-        then
-            enable_new_spawn = not global.spawns[force.name].spawn_created
-        end
-        gui_table.add
-        {
-            type = "sprite-button",
-            name = "teams-menu-table-frame-" .. force.name .. "-row-spawn-button",
-            sprite = "utility/add",
-            style = "frame_action_button",
-            enabled = enable_new_spawn
         }
 
         local players_flow = gui_table.add

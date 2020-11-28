@@ -17,12 +17,6 @@ function cssa_gui.log(message)
     end
 end
 
-script.on_init(function()
-    global.spawns = {}
-    global.spawns["player"] = {force_name = "player", position = { x = 0, y = 0}, spawn_created = true}
-    --table.insert(global.spawns,{force_name = "player", position = { x = 0, y = 0}, spawn_created = true})
-end)
-
 script.on_event(defines.events.on_player_created, function(event)
     local status, err = pcall(cssa_gui.new_player, event)
     if err then cssa_gui.log({"err_generic", "on_player_created", err}) end
@@ -30,18 +24,6 @@ end)
 
 script.on_event(defines.events.on_gui_click, function(event)
     local status, err = pcall(cssa_gui.on_gui_click, event)
-
-    if err then
-        if event.element.valid then
-            cssa_gui.log({"err_specific", "on_gui_click", event.element.name, err})
-        else
-            cssa_gui.log({"err_generic", "on_gui_click", err})
-        end
-    end
-end)
-
-script.on_event(defines.events.on_entity_cloned, function(event)
-    local status, err = pcall(cssa_clone.on_entity_cloned, event)
 
     if err then
         if event.element.valid then

@@ -1,6 +1,6 @@
 -- https://wiki.factorio.com/Tutorial:Mod_settings#The_setting_type_property
 
-local default_starting_spawn_area = 192
+local default_starting_spawn_area = 150
 
 data:extend({
     -- General Settings: This settings are defined by the host, because of "startup"
@@ -8,7 +8,7 @@ data:extend({
         type = "int-setting",
         name = "size-area-to-clone",
         setting_type = "startup",
-        minimum_value = default_starting_spawn_area,
+        minimum_value = 1,
         default_value = default_starting_spawn_area, -- represents the default starting spawn area
         order = "1"
     },

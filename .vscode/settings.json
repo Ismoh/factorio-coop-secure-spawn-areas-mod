@@ -6,6 +6,7 @@
         "game",
         "defines",
         "data",
-        "global"
+        "global",
+        "serpent"
     ]
 }
