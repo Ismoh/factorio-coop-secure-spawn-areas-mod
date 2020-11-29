@@ -1,0 +1,45 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.0.5
+Date: 2020.11.20
+  Info:
+    - Alpha version. Creating forces is now working.
+  Optimisations:
+    - Completely rework of gui lua file.
+  Features:
+    - You are now able to create and join forces.
+    - You are also able to set friend and cease fire.
+    - Allies = set friend
+    - Neutral = set cease fire
+    - You are able to hide default forces of factorio to do not mess anything up.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.4
+Date: 2020.11.17
+  Info:
+    - Still WIP, not working atm.
+  Optimisations:
+    - Using class module for gui.lua.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 2020.11.11
+  Info:
+    - Still WIP, not working atm.
+  Locale:
+    - Added german and english description for mod-settings.
+  Features:
+    - Implemented raw clone_area for testing.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.2
+Date: 2020.11.09
+  Info:
+    - Still WIP, not working atm.
+  Optimisations:
+    - Code tidying and cleanup.
+    - Implementing spawn area cloning.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Date: 2020.11.03
+  Info:
+    - Initial release
+    - Still WIP, not working atm.
+  License:
+    - MIT License
