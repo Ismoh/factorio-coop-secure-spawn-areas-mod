@@ -1,0 +1,70 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.0.8
+Date: 2020.11.28
+  Info:
+    - STILL WIP!
+    - Updated mod to be compatible with Factorio 1.1.1!
+    - You are able to create and join forces. Additionally, you can create new spawns for forces.
+    - Everything from the starting spawn area will be cloned: Tiles, Entities, Resources, ..
+  Bugfixes:
+    - Fixed multiplayer desynchronisation.
+  Optimisations:
+    - Using grid layout instead of coordinates.
+    - Reworked code to use normal lua modules.
+    - Removed class modules (OOP).
+---------------------------------------------------------------------------------------------------
+Version: 0.0.7
+Date: 2020.11.24
+  Info:
+    - Updated mod to be compatible with Factorio 1.1.0!
+    - Version 0.0.6 skipped, because of desync multiplayer sessions.
+    - Renamed the mod from 'Factorio Coop Secure Spawn Areas' to 'Coop Secure Spawn Areas'.
+  Optimisations:
+    - Completely rework of gui lua file. (again)
+  Features:
+    - Added error handling and logging.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.5
+Date: 2020.11.20
+  Info:
+    - Alpha version. Creating forces is now working.
+  Optimisations:
+    - Completely rework of gui lua file.
+  Features:
+    - You are now able to create and join forces.
+    - You are also able to set friend and cease fire.
+    - Allies = set friend
+    - Neutral = set cease fire
+    - You are able to hide default forces of factorio to do not mess anything up. (default)
+---------------------------------------------------------------------------------------------------
+Version: 0.0.4
+Date: 2020.11.17
+  Info:
+    - Still WIP, not working atm.
+  Optimisations:
+    - Using class module for gui.lua.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 2020.11.11
+  Info:
+    - Still WIP, not working atm.
+  Locale:
+    - Added german and english description for mod-settings.
+  Features:
+    - Implemented raw clone_area for testing.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.2
+Date: 2020.11.09
+  Info:
+    - Still WIP, not working atm.
+  Optimisations:
+    - Code tidying and cleanup.
+    - Implementing spawn area cloning.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Date: 2020.11.03
+  Info:
+    - Initial release
+    - Still WIP, not working atm.
+  License:
+    - MIT License

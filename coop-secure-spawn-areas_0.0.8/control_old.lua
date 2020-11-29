@@ -16,7 +16,7 @@ local forces = {} -- List/table of all teams
 -- Player instance is not created or available in on_init().
 -- The chat instance seems to be not available as well.
 script.on_init(function()
-  local size_area_to_clone = settings.startup["size-area-to-clone"].value
+  local size_area_to_clone = math.floor(settings.startup["size-area-to-clone"].value /32) * 32
   local hide_default_forces = settings.startup["hide-default-forces"].value
   -- game.print("size-area-to-clone = " .. size_area_to_clone)
   -- game.print("hide_default_forces = " .. tostring(hide_default_forces))
@@ -60,7 +60,7 @@ script.on_event(defines.events.on_player_created, function (event)
   then
     player.print("on_player_created executed and creating gui instance as player " .. player.name)
     local hide_default_forces = settings.startup["hide-default-forces"].value
-    gui = Gui:new(player, forces, hide_default_forces)
+    gui = Gui:new(forces, hide_default_forces)
 
     table.insert(forces, game.forces.player)
     table.insert(forces, game.forces.neutral)
@@ -71,7 +71,7 @@ script.on_event(defines.events.on_player_created, function (event)
   else
     player.print("on_player_created executed, but gui instance already exists, as player " .. player.name)
   end
-  gui:create_icon()
+  gui:create_icon(player)
 end)
 
 
@@ -93,7 +93,7 @@ script.on_event(defines.events.on_player_joined_game, function(event)
   -- log("set-wall-type = " .. set_wall_type)
   -- player.print("set-wall-type = " .. set_wall_type)
 
-  local size_area_to_clone = settings.startup["size-area-to-clone"].value
+  local size_area_to_clone = math.floor(settings.startup["size-area-to-clone"].value /32) * 32
 
   -- clone_starting_area(player, size_area_to_clone)
 

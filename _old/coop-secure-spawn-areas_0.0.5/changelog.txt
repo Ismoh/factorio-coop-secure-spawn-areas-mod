@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 2020.11.11
+  Info:
+    - Still WIP, not working atm.
+  Locale:
+    - Added german and english description for mod-settings.
+  Features:
+    - Implemented raw clone_area for testing.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.2
+Date: 2020.11.09
+  Info:
+    - Still WIP, not working atm.
+  Optimisations:
+    - Code tidying and cleanup.
+    - Implementing spawn area cloning.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Date: 2020.11.03
+  Info:
+    - Initial release
+    - Still WIP, not working atm.
+  License:
+    - MIT License
