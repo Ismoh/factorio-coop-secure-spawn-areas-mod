@@ -1,0 +1,11 @@
+{
+    "name": "coop-secure-spawn-areas",
+    "version": "0.1.1",
+    "title": "Coop Secure Spawn Areas [WIP]",
+    "author": "ttv/Ismoh_",
+    "factorio_version": "1.1",
+    "contact": "https://www.twitch.tv/ismoh_",
+    "homepage": "https://www.twitch.tv/ismoh_",
+    "dependencies": ["base >= 1.0"],
+    "description": "## Welcome!\\n\\nHi everyone, thanks for having a look!!\\n\\nThis is a **WORK-IN-PROGRESS** mod, which is atm unstable and in development.\\n\\nYou can participate in the development on https://www.twitch.tv/ismoh_, but I'll do this only in german. Sorry for that!\\n\\nThis is a factorio mod, which creates teams and also modify the map to have separated secure starting spawn areas."
+}
