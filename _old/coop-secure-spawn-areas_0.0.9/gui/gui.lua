@@ -295,7 +295,7 @@ function cssa_gui.create_entry_for_forces(player, gui_table)
             end
         end
 
-        game.print("create_entry_for_forces executed as " .. force.name .. " as player " .. player.name)
+        --game.print("create_entry_for_forces executed as " .. force.name .. " as player " .. player.name)
 
         -- second table row contains 5 elements
         gui_table.add
@@ -335,9 +335,11 @@ function cssa_gui.create_entry_for_forces(player, gui_table)
         }
 
         local enable_new_spawn = true
-        if(global.spawns[force.name] ~= nil)
-        then
+        if global.spawns[force.name] ~= nil then
             enable_new_spawn = not global.spawns[force.name].spawn_created
+        end
+        if force.name == "player" or force.players[1] == nil then -- if palyer force or force does not have any players, then disable
+            enable_new_spawn = false
         end
         gui_table.add
         {

@@ -1,104 +1,64 @@
 if not cssa_spawn_math then cssa_spawn_math = {} end
 
+cssa_spawn_math.seed = 341
+
 function cssa_spawn_math.get_new_spawn(player)
   local distance_between_spawns = settings.startup["distance-between-spawns"].value
-  local distance_ok = false
 
   if(not global.generator or not global.generator.valid) then
     global.generator = game.create_random_generator()
   end
-  global.generator.re_seed(game.tick * 0.5)
 
-  local plusMinus = global.generator()
-  local random = global.generator(distance_between_spawns, 2 * distance_between_spawns)
-  local random2 = global.generator(distance_between_spawns, 2 * distance_between_spawns)
+  -- if new_seed exceeds the max uint value of 4294967295, then reset
+  -- to the max value the seed will effect the generator: 341
+  -- https://lua-api.factorio.com/latest/LuaRandomGenerator.html#LuaRandomGenerator.re_seed
+  log("game.tick " .. game.tick)
+  cssa_spawn_math.seed = cssa_spawn_math.seed + game.tick * 341
+  if cssa_spawn_math.seed > 4294967295 then cssa_spawn_math.seed = 341 end
+  log("cssa_spawn_math.seed " .. cssa_spawn_math.seed)
+  global.generator.re_seed(cssa_spawn_math.seed)
 
-  if(plusMinus <= 0.5)
-  then
-    random = random *-1
-  else
-    random2 = random2 *-1
-  end
+  local new_spawn_position = { x = 0, y = 0 }
+  local spawn_cluster_count = 1
+  local range = 1 -- think of default-spawn = 0, near = 1, mid-range = 2, far = 3, really-far = 4, ... and so on
+  local is_spawn_in_use = true
+  while is_spawn_in_use do
+    local plus_minus_zero_x = global.generator(-1, 1)
+    local plus_minus_zero_y = global.generator(-1, 1)
+    log("plus_minus_zero_x = " .. plus_minus_zero_x)
+    log("plus_minus_zero_y = " .. plus_minus_zero_y)
 
-  local new_spawn_position = {
-      x = random,
-      y = random2
-    }
-
-  local iterations = 0
-  while not distance_ok do
-    local distance_ok_each_force = false
+    range = math.floor(spawn_cluster_count / 8)
+    if range == 0 then range = 1 end
 
     for key, entry in pairs(global.spawns) do
-      local distance = math.sqrt(
-        math.pow(entry.position.x - new_spawn_position.x, 2) +
-        math.pow(entry.position.y - new_spawn_position.y, 2)
-      )
-      distance_ok_each_force = distance >= distance_between_spawns
+      new_spawn_position.x = plus_minus_zero_x * range * distance_between_spawns
+      new_spawn_position.y = plus_minus_zero_y * range * distance_between_spawns
+      -- snap to grid layout
+      new_spawn_position.x = math.floor(new_spawn_position.x /32) * 32
+      new_spawn_position.y = math.floor(new_spawn_position.y /32) * 32
 
-      game.print("New spawn position: x=" .. new_spawn_position.x .. ", y=" .. new_spawn_position.y 
-      .. " Distance between the new spawn " .. player.force.name .. " to " .. entry.force_name
-      .. " = " .. distance .. ", distance-ok-between-each-force = " .. tostring(distance_ok_each_force))
-      iterations = iterations +1
+      is_spawn_in_use = new_spawn_position.x == entry.position.x and new_spawn_position.y == entry.position.y
 
-      if not distance_ok_each_force then
-        global.generator.re_seed(game.tick * iterations/100)
-        distance_ok = false
-        new_spawn_position.x = global.generator(distance_between_spawns, 2 * distance_between_spawns)
-        new_spawn_position.y = global.generator(distance_between_spawns, 2 * distance_between_spawns)
-        --local newX = entry.position.x - math.sqrt(math.pow(distance_between_spawns, 2) - math.pow(entry.position.y - newY, 2))
-
-        local plusMinus = global.generator()
-        if(plusMinus <= 0.5)
-        then
-          plusMinus = plusMinus*-1
-        end
-        new_spawn_position.x = new_spawn_position.x *(1 - plusMinus)
-        new_spawn_position.y = new_spawn_position.y *(1 - plusMinus)
-      end
+      log("spawn_cluster_count = " .. spawn_cluster_count ..
+      ", range = " .. range ..
+      ", new_spawn_position(x,y) = " .. new_spawn_position.x .. ", " .. new_spawn_position.y ..
+      ", " .. entry.force_name .. "(x,y) = " .. entry.position.x .. ", " .. entry.position.y ..
+      ", is_spawn_in_use = " .. tostring(is_spawn_in_use))
+      if is_spawn_in_use then break end
     end
-    distance_ok = distance_ok_each_force
+
+    spawn_cluster_count = spawn_cluster_count + 1 -- range = 1 -> 8, range = 2 -> 16, 24, 32, ..
+    -- re-seed, because there wasn't any free spawn yet
+    cssa_spawn_math.seed = cssa_spawn_math.seed + 341
+    global.generator.re_seed(cssa_spawn_math.seed)
+    log("spawn_cluster_count = " .. spawn_cluster_count)
   end
 
-  -- snap to grid layout
-  new_spawn_position.x = math.floor(new_spawn_position.x /32) * 32
-  new_spawn_position.y = math.floor(new_spawn_position.y /32) * 32
   log("new_spawn_position.x = snapped " .. tostring(new_spawn_position.x))
   log("new_spawn_position.y = snapped " .. tostring(new_spawn_position.y))
 
-  --[[ 
-  https://www.onlinemathe.de/forum/Kreis-Punkte-auf-der-Linie-Berechnen
-  https://mathematikalpha.de/wp-content/uploads/2016/12/09-Kreis.pdf seit 981
-
-  x(φ)=xM+R⋅sin(φ)
-  y(φ)=yM+R⋅cos(φ)
-  φ = winkel -> 1-360, steps 1
- ]]
- local outlines = {}
- for key, spawn in pairs(global.spawns) do
-   local outline_points = {}
-   if(not spawn.spawn_created)
-   then
-    for angle = 0, 360, 20 do
-      local radius = distance_between_spawns/2
-      local x = math.floor(spawn.position.x + radius * math.sin(angle))
-      local y = math.floor(spawn.position.y + radius * math.cos(angle))
-      local p = { x = x, y = y}
-      table.insert(outline_points, p)
-      log(tostring(angle))
-      log("outline point for " .. spawn.force_name .. ": p=(" .. x .. ", " .. y .. ")")
-      --player.force.unchart_chunk({x = x/32, y = y/32}, player.surface)
-      --game.surfaces[1].create_entity({name="land-mine", amount=1, position={x, y}})
-      local character = game.surfaces[1].create_entity{name = "character", position = {x, y}, force = "enemy"}
-      game.surfaces[1].create_entity{name = "artillery-projectile", position = {player.position.x, player.position.y}, force = spawn.force_name, target = character, speed = 1}
-      character.destroy()
-    end
-    local outline = { force_name = spawn.force_name, outline_points = outline_points }
-    table.insert(outlines, outline)
-  end
- end
-
-  global.spawns[player.force.name] = {force_name = player.force.name, position = new_spawn_position, spawn_created = true}
+  global.spawns[player.force.name] = {force_name = player.force.name, position = new_spawn_position, spawn_created = false}
 
   return new_spawn_position
 end

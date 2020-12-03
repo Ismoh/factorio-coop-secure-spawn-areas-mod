@@ -36,29 +36,29 @@ end)
 
 script.on_event(defines.events.on_player_joined_game, function (event)
   local player = game.get_player(event.player_index)
-  game.print("Player " .. player.name .. " joined the game.")
+  --game.print("Player " .. player.name .. " joined the game.")
 end)
 
 
 script.on_event(defines.events.on_pre_player_left_game, function (event)
   local player = game.get_player(event.player_index)
-  game.print("Player " .. player.name .. " pre left the game.")
+  --game.print("Player " .. player.name .. " pre left the game.")
 end)
 
 
 script.on_event(defines.events.on_player_left_game, function (event)
   local player = game.get_player(event.player_index)
-  game.print("Player " .. player.name .. " left the game.")
+  --game.print("Player " .. player.name .. " left the game.")
 end)
 
 
 -- Listen to the on player created event and create the mods icon
 script.on_event(defines.events.on_player_created, function (event)
   local player = game.get_player(event.player_index)
-  player.print("on_player_created: gui == nil" .. tostring(gui == nil))
+  --player.print("on_player_created: gui == nil" .. tostring(gui == nil))
   if(gui == nil)
   then
-    player.print("on_player_created executed and creating gui instance as player " .. player.name)
+    --player.print("on_player_created executed and creating gui instance as player " .. player.name)
     local hide_default_forces = settings.startup["hide-default-forces"].value
     gui = Gui:new(forces, hide_default_forces)
 
