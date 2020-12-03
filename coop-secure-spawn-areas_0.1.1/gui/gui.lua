@@ -107,7 +107,7 @@ function cssa_gui.on_gui_click(event)
         return
     end
 
-    if(event.element.type == "checkbox")
+    if event.element.type == "checkbox" and string.find(event.element.name, "teams")
     then
         local checkbox = event.element
         local force = game.forces[checkbox.caption]
