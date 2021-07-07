@@ -4,6 +4,7 @@ require "clone"
 
 if not cssa_gui then cssa_gui = {} end
 if not cssa_clone then cssa_clone = {} end
+local mod_gui = require("__core__/lualib/mod-gui") --https://www.factorio.com/blog/post/fff-174
 
 -- EVENTS
 
@@ -182,10 +183,17 @@ function cssa_gui.create_menu_icon(player)
     end
 
     if not root or destroyed or not root.valid  then
-        local root = player.gui.top.add{
+        -- local root = player.gui.top.add{
+        --     type = "sprite-button",
+        --     name = "cssa_gui_root",
+        --     sprite = "cssa-main-sprite-button"
+        -- }
+        local root = mod_gui.get_button_flow(player).add
+        {
             type = "sprite-button",
             name = "cssa_gui_root",
-            sprite = "cssa-main-sprite-button"
+            sprite = "cssa-main-sprite-button",
+            style = "cssa-mod-gui-button"
         }
     end
 end
@@ -203,11 +211,27 @@ function cssa_gui.create_menu(player)
         {
             type = "frame",
             name = "cssa_gui_menu",
-            direction = "vertical",
-            caption = "Forces"
+            direction = "vertical"
         }
         menu.force_auto_center()
+        
+        -- Create my own title flow
+        local title_flow = menu.add
+        {
+            type = "flow",
+            name = "cssa-title-flow",
+            direction = "horizontal",
+            style = "cssa-title-flow"
+        }
+        title_flow.add
+        {
+            type = "label",
+            name = "cssa-title-label",
+            caption = "Forces",
+            style = "bold_label"
+        }
 
+        
         local empty_drag_widget = menu.add
         {
             type = "empty-widget",
@@ -215,7 +239,7 @@ function cssa_gui.create_menu(player)
         }
         empty_drag_widget.drag_target = menu
 
-        menu.add{type="sprite-button", name="close-menu", sprite = "utility/close_white", style="frame_action_button"}
+        menu.add{type="sprite-button", name="close-menu", sprite = "utility/close_white", style="cssa-top-right-close-button"}
 
         local gui_table = menu.add
         {

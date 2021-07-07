@@ -1,8 +1,12 @@
-## Welcome!
-Hi everyone, thanks for having a look!!
+# Coop Secure Spawn Areas
 
-This is a **WORK-IN-PROGRESS** mod, which is atm unstable and in development.
+Good news to announce!
 
-You can participate in the development on [ttv/Ismoh_](https://www.twitch.tv/ismoh_), but I'll do this only in german. Sorry for that!
+Coop-Secure-Spawn-Areas is now pretty stable on multiplayer sessions! It's still work-in-progress, but you are now able to create forces, join them and set the diplomancy of those forces.
+You are also able to clone the spawn starting area, but it's ugly atm.
 
-This is a factorio mod, which creates teams and also modify the map to have separated secure starting spawn areas.
+This mod creates teams and also modifies the map to have separated secure starting spawn areas.
+
+Think of each Base for each Team.
+
+Enjoy and have fun!
