@@ -10,3 +10,7 @@ This mod creates teams and also modifies the map to have separated secure starti
 Think of each Base for each Team.
 
 Enjoy and have fun!
+
+https://mods.factorio.com/mod/coop-secure-spawn-areas
+
+FYI: Development on this project is canceled. If you want to edit this, fork it and create PRs! <3
